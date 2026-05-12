@@ -234,6 +234,30 @@
   .les-mer-btn { font-size: 10px; color: #185FA5; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0; margin-top: auto; font-family: var(--font-sans); }
   .les-mer-btn-pop { font-size: 10px; color: #3B6D11; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0; margin-top: auto; font-family: var(--font-sans); }
 
+  .valgt-merke {
+    display: inline-block;
+    background: #3B6D11;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-top: 6px;
+  }
+
+  .valgt-tekst {
+    display: none;
+    background: #EAF3DE;
+    border: 1px solid #3B6D11;
+    border-radius: var(--border-radius-md);
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #27500A;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
   /* GDPR */
   .gdpr-box {
     background: var(--color-background-secondary);
@@ -451,6 +475,8 @@
       </div>
     </div>
 
+    <div class="valgt-tekst" id="valgt-tekst"></div>
+
     <div class="gdpr-box">
       <div class="gdpr-row">
         <input type="checkbox" style="margin-top:2px;flex-shrink:0;accent-color:#185FA5;" />
@@ -564,10 +590,28 @@
     }, 700);
   }
 
+  const laderNavn = { enkel: 'Enkel-lader', smart: 'Smart-lader', hurtig: 'Hurtig-lader' };
+
   function velgLader(type) {
     ['enkel','smart','hurtig'].forEach(t => {
-      if (t !== 'smart') document.getElementById('lader-'+t).classList.toggle('selected', t === type);
+      const el = document.getElementById('lader-'+t);
+      el.classList.toggle('selected', t === type);
+      const existing = el.querySelector('.valgt-merke');
+      if (existing) existing.remove();
+      if (t === type) {
+        const merke = document.createElement('div');
+        merke.className = 'valgt-merke';
+        merke.textContent = '✓ Valgt';
+        el.appendChild(merke);
+      }
     });
+    const cta = document.getElementById('cta-btn');
+    if (!cta.disabled) {
+      cta.textContent = `Jeg er med – jeg vil ha ${laderNavn[type]}`;
+    }
+    const valgtEl = document.getElementById('valgt-tekst');
+    if (valgtEl) valgtEl.style.display = 'block';
+    if (valgtEl) valgtEl.textContent = `Du har valgt: ${laderNavn[type]}`;
   }
 
   function bekreft() {
